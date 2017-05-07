@@ -5,10 +5,9 @@ const persist = require('./persist')
 const pubsubSettings = {
   type: 'redis',
   redis: require('redis'),
-  db: 12,
   port: 6379,
+  host: '127.0.0.1',
   return_buffers: true, // to handle binary payloads
-  host: 'localhost'
 };
 
 const moscaSettings = {
@@ -48,12 +47,13 @@ const start = () => {
       return
     }
 
-    console.log('Subscribed a', topic + ' ' + client.id)
+    console.log('Subscribed', topic + ' ' + client.id)
 
     masterClient.subscribe(topic)
 
     persist.get(topic).then((value) => {
       if (!value) value = {}
+
       masterClient.publish(topic, JSON.stringify(value))
     }).catch((err) => {
       console.log('err', err)
@@ -65,13 +65,13 @@ const start = () => {
   })
 
   // fired when a message is received
-  server.on('published', (packet, client) => {
+  server.on('published', ({ topic, payload }, client) => {
     if (client.id !== 'master') {
-      console.log('packet', packet)
-      console.log('Received', packet.payload.toString() + ' from ' + client.id)
-      // persist.update()
+      console.log('Received', payload.toString() + ' from ' + client.id)
+
+      persist.update(topic, JSON.parse(payload.toString()))
     } else {
-      console.log('Sent', packet.payload.toString() + ' from ' + client.id)
+      console.log('Sent', payload.toString() + ' from ' + client.id)
     }
   })
 }

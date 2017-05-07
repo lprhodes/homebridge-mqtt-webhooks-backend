@@ -1,15 +1,15 @@
 const merge = require('lodash.merge')
 const redis = require('redis')
-const redisClient = redis.createClient()
+const redisClient = redis.createClient(process.env.REDIS_URL)
 
-const update = async (key, newData) => {
+const update = async (key, newValue) => {
   try {
-    let currentValue = await get(key)
+    const currentValue = await get(key)
+    newValue = merge(currentValue, newValue)
 
-    let newValue = merge(currentValue, newData)
-    newValue = JSON.stringify(newValue)
+    delete newValue.clientID
 
-    await set(key, newValue, redis.print);
+    await set(key, newValue)
   } catch (err) {
     throw err
   }
