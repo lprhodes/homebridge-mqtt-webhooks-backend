@@ -1,0 +1,22 @@
+{
+  "name": "webhooks-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "helmet": "^3.6.0",
+    "idgen": "^2.0.2",
+    "lodash.merge": "^4.6.0",
+    "mosca": "^2.4.0",
+    "node-idgen": "^0.1.0",
+    "redis": "^2.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
